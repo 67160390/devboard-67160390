@@ -16,6 +16,7 @@ function PostList({ posts }) {
       {posts.map((post) => (
         <PostCard key={post.id} title={post.title} body={post.body} />
       ))}
+      {/* task1 challenge1 */}
       <PostCount count={posts.length} />
     </div>
   );
