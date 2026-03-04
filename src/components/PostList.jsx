@@ -1,8 +1,16 @@
+import { useState } from "react";
 import PostCard from "./PostCard";
 import PostCount from "./PostCount";
 import PostSkeleton from "./PostSkeleton";
 
-function PostList({ posts }) {
+function PostList({ posts, favorites, onToggleFavorite }) {
+  const [search, setSearch] = useState("");
+
+  // กรองโพสต์ตาม search
+  const filtered = posts.filter((post) =>
+    post.title.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <div>
       <h2
@@ -16,6 +24,41 @@ function PostList({ posts }) {
       </h2>
       {/* task1 challenge1 */}
       <PostCount count={posts.length} />
+
+      {/* Search Input */}
+      <input
+        type="text"
+        placeholder="ค้นหาโพสต์..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{
+          width: "100%",
+          padding: "0.5rem 0.75rem",
+          border: "1px solid #cbd5e0",
+          borderRadius: "6px",
+          fontSize: "1rem",
+          marginBottom: "1rem",
+          boxSizing: "border-box",
+        }}
+      />
+
+      {/* ถ้าไม่พบโพสต์ */}
+      {filtered.length === 0 && (
+        <p style={{ color: "#718096", textAlign: "center", padding: "2rem" }}>
+          ไม่พบโพสต์ที่ค้นหา
+        </p>
+      )}
+
+      {/* แสดงรายการโพสต์ */}
+      {filtered.map((post) => (
+        <PostCard
+          key={post.id}
+          title={post.title}
+          body={post.body}
+          isFavorite={favorites.includes(post.id)}
+          onToggleFavorite={() => onToggleFavorite(post.id)}
+        />
+      ))}
 
       {/* task1 challenge3 */}
       {posts.length === 0 ? (
