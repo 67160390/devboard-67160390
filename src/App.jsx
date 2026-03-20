@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import PostList from "./components/PostList";
 import UserCard from "./components/UserCard";
@@ -37,16 +37,27 @@ const USERS = [
 
 function App() {
   const [posts, setPosts] = useState(INITIAL_POSTS);
-  const [favorites, setFavorites] = useState([]); // เก็บ id ที่ถูกใจ
+
+  /* task2 challenge3 */
+  const [favorites, setFavorites] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("favorites")) || [];
+    } catch {
+      return [];
+    }
+  }); // เก็บ id ที่ถูกใจ
 
   // Toggle ถูกใจ/ยกเลิก
   function handleToggleFavorite(postId) {
-    setFavorites(
-      (prev) =>
-        prev.includes(postId)
-          ? prev.filter((id) => id !== postId) // ลบออก
-          : [...prev, postId], // เพิ่มเข้า
-    );
+    setFavorites((prev) => {
+      const updated = prev.includes(postId)
+        ? prev.filter((id) => id !== postId)
+        : [...prev, postId];
+
+      /* task2 challenge3 */
+      localStorage.setItem("favorites", JSON.stringify(updated));
+      return updated;
+    });
   }
 
   // เพิ่มโพสต์ใหม่
