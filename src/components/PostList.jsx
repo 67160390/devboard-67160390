@@ -11,6 +11,12 @@ function PostList({ posts, favorites, onToggleFavorite }) {
     post.title.toLowerCase().includes(search.toLowerCase()),
   );
 
+  /* task2 challenge2 */
+  const [sortOrder, setSortOrder] = useState("desc");
+  const sortedPosts = [...filtered].sort((a, b) =>
+    sortOrder === "asc" ? a.id - b.id : b.id - a.id,
+  );
+
   return (
     <div>
       <h2
@@ -24,6 +30,25 @@ function PostList({ posts, favorites, onToggleFavorite }) {
       </h2>
       {/* task1 challenge1 */}
       <PostCount count={posts.length} />
+
+      {/* task2 challenge2 */}
+      <button
+        onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+        style={{
+          margin: "0.5rem 0",
+          padding: "0.4rem 1rem",
+          border: "1px solid #cbd5e0",
+          borderRadius: "6px",
+          background: "#f1f5f9",
+          color: "#1e293b",
+          fontWeight: "bold",
+          cursor: "pointer",
+          outline: "none",
+        }}
+        aria-label={sortOrder === "desc" ? "ใหม่สุดก่อน" : "เก่าสุดก่อน"}
+      >
+        {sortOrder === "desc" ? "🔽 ใหม่สุดก่อน" : "🔼 เก่าสุดก่อน"}
+      </button>
 
       {/* Search Input */}
       <input
@@ -49,8 +74,8 @@ function PostList({ posts, favorites, onToggleFavorite }) {
         </p>
       )}
 
-      {/* แสดงรายการโพสต์ */}
-      {filtered.map((post) => (
+      {/* แสดงรายการโพสต์ (เรียงตาม sortOrder) */}
+      {sortedPosts.map((post) => (
         <PostCard
           key={post.id}
           title={post.title}

@@ -28,6 +28,7 @@ function AddPostForm({ onAddPost }) {
         เพิ่มโพสต์ใหม่
       </h3>
 
+      {/* task2 challenge1 */}
       <div
         style={{
           textAlign: "right",
