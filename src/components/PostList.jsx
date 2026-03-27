@@ -10,21 +10,22 @@ function PostList({ favorites, onToggleFavorite }) {
   const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        setLoading(true);
-        setError(null);
-        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
-        if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
-        const data = await res.json();
-        setPosts(data.slice(0, 20)); // เอาแค่ 20 รายการแรก
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  async function fetchPosts() {
+    try {
+      setLoading(true);
+      setError(null);
+      const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+      if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
+      const data = await res.json();
+      setPosts(data.slice(0, 20)); // เอาแค่ 20 รายการแรก
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  }
+
+  useEffect(() => {
     fetchPosts();
   }, []); // [] = ทำครั้งเดียวตอน component mount
 
@@ -62,6 +63,9 @@ function PostList({ favorites, onToggleFavorite }) {
           color: "#2d3748",
           borderBottom: "2px solid #1e40af",
           paddingBottom: "0.5rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.75rem",
         }}
       >
         โพสต์ล่าสุด
@@ -70,23 +74,58 @@ function PostList({ favorites, onToggleFavorite }) {
       <PostCount count={posts.length} />
 
       {/* task2 challenge2 */}
-      <button
-        onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+      <div
         style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
           margin: "0.5rem 0",
-          padding: "0.4rem 1rem",
-          border: "1px solid #cbd5e0",
-          borderRadius: "6px",
-          background: "#f1f5f9",
-          color: "#1e293b",
-          fontWeight: "bold",
-          cursor: "pointer",
-          outline: "none",
         }}
-        aria-label={sortOrder === "desc" ? "ใหม่สุดก่อน" : "เก่าสุดก่อน"}
       >
-        {sortOrder === "desc" ? "🔽 ใหม่สุดก่อน" : "🔼 เก่าสุดก่อน"}
-      </button>
+        <button
+          onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+          style={{
+            padding: "0.4rem 1rem",
+            border: "1px solid #cbd5e0",
+            borderRadius: "6px",
+            background: "#f1f5f9",
+            color: "#1e293b",
+            fontWeight: "bold",
+            cursor: "pointer",
+            outline: "none",
+            fontSize: "0.9rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.3rem",
+          }}
+          aria-label={sortOrder === "desc" ? "ใหม่สุดก่อน" : "เก่าสุดก่อน"}
+        >
+          {sortOrder === "desc" ? "🔽 ใหม่สุดก่อน" : "🔼 เก่าสุดก่อน"}
+
+          {/* task3 challenge1 */}
+        </button>
+        <div style={{ flex: 1 }} />
+        <button
+          onClick={fetchPosts}
+          style={{
+            padding: "0.4rem 1rem",
+            border: "1px solid #cbd5e0",
+            borderRadius: "6px",
+            background: "#e0e7ef",
+            color: "#1e293b",
+            fontWeight: "bold",
+            cursor: "pointer",
+            outline: "none",
+            fontSize: "0.9rem",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.3rem",
+          }}
+          aria-label="โหลดใหม่"
+        >
+          🔄 โหลดใหม่
+        </button>
+      </div>
 
       {/* Search Input */}
       <input
