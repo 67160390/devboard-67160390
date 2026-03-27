@@ -1,10 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PostCard from "./PostCard";
 import PostCount from "./PostCount";
 import PostSkeleton from "./PostSkeleton";
+import LoadingSpinner from "./LoadingSpinner";
 
-function PostList({ posts, favorites, onToggleFavorite }) {
+function PostList({ favorites, onToggleFavorite }) {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch("https://jsonplaceholder.typicode.com/posts");
+        if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
+        const data = await res.json();
+        setPosts(data.slice(0, 20)); // เอาแค่ 20 รายการแรก
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchPosts();
+  }, []); // [] = ทำครั้งเดียวตอน component mount
 
   // กรองโพสต์ตาม search
   const filtered = posts.filter((post) =>
@@ -16,6 +38,22 @@ function PostList({ posts, favorites, onToggleFavorite }) {
   const sortedPosts = [...filtered].sort((a, b) =>
     sortOrder === "asc" ? a.id - b.id : b.id - a.id,
   );
+
+  if (loading) return <LoadingSpinner />;
+  if (error)
+    return (
+      <div
+        style={{
+          padding: "1.5rem",
+          background: "#fff5f5",
+          border: "1px solid #fc8181",
+          borderRadius: "8px",
+          color: "#c53030",
+        }}
+      >
+        เกิดข้อผิดพลาด: {error}
+      </div>
+    );
 
   return (
     <div>
@@ -80,19 +118,14 @@ function PostList({ posts, favorites, onToggleFavorite }) {
           key={post.id}
           title={post.title}
           body={post.body}
+          post={post}
           isFavorite={favorites.includes(post.id)}
           onToggleFavorite={() => onToggleFavorite(post.id)}
         />
       ))}
 
       {/* task1 challenge3 */}
-      {posts.length === 0 ? (
-        <PostSkeleton />
-      ) : (
-        posts.map((post) => (
-          <PostCard key={post.id} title={post.title} body={post.body} />
-        ))
-      )}
+      {posts.length === 0 && <PostSkeleton />}
     </div>
   );
 }
