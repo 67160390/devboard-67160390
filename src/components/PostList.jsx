@@ -53,7 +53,7 @@ function PostList({ favorites, onToggleFavorite }) {
   const indexOfFirstPost = indexOfLastPost - postsPerPage; // ถ้าอยู่ หน้า 1: 10 - 10 = 0 (เริ่มดึงตั้งแต่ index ที่ 0)
 
   // ตัดเฉพาะข้อมูลที่จะแสดงในหน้านั้นๆ
-  const currentItems = filtered.slice(indexOfFirstPost, indexOfLastPost); // ถ้าอยู่ หน้า 1: จะดึงข้อมูล Index ที่ 0-9
+  const currentItems = sortedPosts.slice(indexOfFirstPost, indexOfLastPost); // ถ้าอยู่ หน้า 1: จะดึงข้อมูล Index ที่ 0-9
 
   if (loading) return <LoadingSpinner />;
   if (error)
@@ -174,7 +174,7 @@ function PostList({ favorites, onToggleFavorite }) {
           title={post.title}
           body={post.body}
           post={post}
-          isFavorite={favorites.includes(post.id)}
+          isFavorite={(favorites || []).includes(post.id)}
           onToggleFavorite={() => onToggleFavorite(post.id)}
         />
       ))}
