@@ -86,7 +86,7 @@ function PostList({ favorites, onToggleFavorite }) {
         โพสต์ล่าสุด
       </h2>
       {/* task1 challenge1 */}
-      <PostCount count={posts.length} />
+      <PostCount count={filtered.length} />
 
       {/* task2 challenge2 */}
       <div
